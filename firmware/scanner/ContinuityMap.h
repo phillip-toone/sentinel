@@ -58,8 +58,8 @@ namespace Sentinel
         }
 
     private:
+        template <typename NodeIO>
         friend class ContinuityScanner;
-
         /**
          * Records measured continuity between two logical lines.
          *
