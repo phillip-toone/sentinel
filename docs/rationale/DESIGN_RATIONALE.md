@@ -110,7 +110,64 @@ Advantages include:
 - future game support
 - future rule changes
 
-The small increase in scan time is considered insignificant on modern processors.
+The computational cost of processing the additional measurements is expected to be small on modern processors. The total scan time, however, may be constrained by the electrical settling time required between measurement phases. This must be characterized on real fencing hardware before the performance cost of a complete scan can be considered insignificant.
+
+---
+
+# Preserve the Full Scan Until Measurement Proves Otherwise
+
+The decision to measure every unique line pair was revisited when the behavior of the original scoring apparatus was examined.
+
+The proven ESP32 implementation used an active-low continuity measurement technique:
+
+```cpp
+void setPIN(short pin) {
+    pinMode(pin, OUTPUT);
+    digitalWrite(pin, LOW);
+    delay(1);
+}
+
+void unsetPIN(short pin) {
+    pinMode(pin, INPUT_PULLUP);
+    digitalWrite(pin, HIGH);
+}
+```
+
+Under normal conditions, the lines were configured as inputs with internal pull-ups. During a measurement, one selected line was configured as an output and driven LOW. Electrical continuity caused connected lines to be pulled LOW as well.
+
+The 1 millisecond delay in `setPIN()` was not derived from ESP32 GPIO switching specifications. It was retained because it produced reliable operation during development.
+
+Earlier versions appeared functional with less conservative timing until realistic fencing cabling was introduced. Long floor cables and, particularly, fencing reels with their associated connecting cables exposed reliability problems that were not apparent with shorter wiring.
+
+This experience is important because the relevant settling behavior belongs to the complete electrical system, not merely the microcontroller GPIO.
+
+Potential contributors include:
+
+- cable capacitance
+- cable length
+- reel wiring
+- connector resistance
+- contact resistance
+- internal pull-up characteristics
+- external electrical loading
+
+Consequently, the nanosecond-scale switching speed of an ESP32 GPIO does not by itself establish a safe measurement interval.
+
+A complete seven-line scan requires six driven-line measurement phases. If every phase requires a 1 millisecond settling interval, settling time alone requires approximately 6 milliseconds per complete snapshot.
+
+This means the performance concern that originally discouraged a complete scan was legitimate.
+
+However, the minimum reliable settling time was never systematically measured.
+
+Sentinel will therefore retain the complete 21-pair scan unless empirical testing on realistic fencing hardware demonstrates that it cannot satisfy the required timing constraints.
+
+The planned approach is to reproduce the known-good measurement behavior first, make the settling interval configurable, and then characterize reliability at progressively shorter intervals using realistic cables, reels, weapons, and connectors.
+
+This reflects a broader engineering principle used by Sentinel:
+
+> **Measure first. Optimize from evidence.**
+
+Processor-level optimization, direct GPIO register access, or changes to the scanner architecture should not be used to compensate for an assumed bottleneck before the electrical behavior of the real system has been measured.
 
 ---
 
