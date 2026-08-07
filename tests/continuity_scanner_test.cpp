@@ -99,10 +99,61 @@ void testTransitiveTriangle()
     assert(map.raw() == expected);
 }
 
+void testIndependentComponents()
+{
+    MockNodeIO io;
+
+    // Three electrically independent components:
+    //
+    //     RA ----- GC ----- MT
+    //
+    //     RB ----- RC
+    //
+    //     GB ----- GA
+    //
+    io.connect(Line::RA, Line::GC);
+    io.connect(Line::GC, Line::MT);
+
+    io.connect(Line::RB, Line::RC);
+
+    io.connect(Line::GB, Line::GA);
+
+    ContinuityScanner<MockNodeIO> scanner(io);
+    const auto map = scanner.scan();
+
+    // Component 1
+    assert(map.hasContinuity(Line::RA, Line::GC));
+    assert(map.hasContinuity(Line::RA, Line::MT));
+    assert(map.hasContinuity(Line::GC, Line::MT));
+
+    // Component 2
+    assert(map.hasContinuity(Line::RB, Line::RC));
+
+    // Component 3
+    assert(map.hasContinuity(Line::GB, Line::GA));
+
+    // Verify representative lines from different components
+    // remain electrically isolated.
+    assert(!map.hasContinuity(Line::RA, Line::RB));
+    assert(!map.hasContinuity(Line::GC, Line::RC));
+    assert(!map.hasContinuity(Line::MT, Line::GA));
+    assert(!map.hasContinuity(Line::RB, Line::GB));
+
+    constexpr uint32_t expected =
+        (uint32_t{1} << 2) |  // RA-MT
+        (uint32_t{1} << 3) |  // RA-GC
+        (uint32_t{1} << 6) |  // RB-RC
+        (uint32_t{1} << 15) | // MT-GC
+        (uint32_t{1} << 20);  // GB-GA
+
+    assert(map.raw() == expected);
+}
+
 int main()
 {
     testAllCanonicalPairs();
     testTransitiveTriangle();
+    testIndependentComponents();
 
     std::cout
         << "All continuity scanner tests passed."
