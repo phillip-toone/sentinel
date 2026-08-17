@@ -1,0 +1,40 @@
+ets Jun  8 2016 00:22:57
+
+rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:1184
+load:0x40078000,len:13232
+load:0x40080400,len:3028
+entry 0x400805e4
+
+Sentinel ESP32 full continuity scan experiment
+Explicit settling delay: 0 us
+GPIO mapping:
+  RA = GPIO 21
+  RB = GPIO 22
+  RC = GPIO 17
+  MT = GPIO 32
+  GC = GPIO 25
+  GB = GPIO 26
+  GA = GPIO 27
+
+Initial map: 0x1C0000  111000000000000000000
+
+=== Scan timing ===
+Scans: 100000
+Elapsed: 32547179 us
+Average: 325.472 us/scan
+Rate: 3072.5 scans/second
+
+=== Stability test ===
+Expected map: 0x1C0042  111000000000001000010
+Scans: 1000000
+Errors: 999992
+Result: FAIL
+First error at scan: 1
+First erroneous map: 0x1C0043  111000000000001000011
+Difference mask:    0x000001  000000000000000000001
+
+Experiment complete.
