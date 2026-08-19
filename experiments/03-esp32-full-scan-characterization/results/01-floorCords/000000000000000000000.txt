@@ -1,0 +1,199 @@
+ets Jun  8 2016 00:22:57
+
+rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:1184
+load:0x40078000,len:13232
+load:0x40080400,len:3028
+entry 0x400805e4
+
+Sentinel ESP32 full-scan characterization
+
+GPIO mapping:
+  RA = GPIO 21
+  RB = GPIO 22
+  RC = GPIO 17
+  MT = GPIO 32
+  GC = GPIO 25
+  GB = GPIO 26
+  GA = GPIO 27
+
+==================================================
+REFERENCE CHARACTERIZATION
+==================================================
+Reference settling delay: 1000 us
+Reference scans: 1000
+
+Candidate reference map: 0x000000  000000000000000000000
+Reference scans agreeing: 1000 / 1000
+Reference status: VALID
+
+==================================================
+SETTLING-TIME CHARACTERIZATION
+==================================================
+Trusted reference map: 0x000000  000000000000000000000
+Scans per delay: 10000
+
+--------------------------------------------------
+Settling delay: 0 us
+Scans: 10000
+Incorrect scans: 10000
+Scans with false positives: 10000
+Scans with false negatives: 0
+Average scan time: 184.376 us
+Scan rate: 5423.7 scans/sec
+Result: FAIL
+First error at scan: 1
+Reference map:       0x000000  000000000000000000000
+First erroneous map: 0x1C0043  111000000000001000011
+Difference mask:     0x1C0043  111000000000001000011
+
+Per-bit errors:
+Bit  Pair   False+   False-
+ 0   RA-RB     9993        0
+ 1   RA-RC    10000        0
+ 6   RB-RC     9995        0
+18   GC-GB    10000        0
+19   GC-GA     9994        0
+20   GB-GA     9999        0
+
+--------------------------------------------------
+Settling delay: 1 us
+Scans: 10000
+Incorrect scans: 10000
+Scans with false positives: 10000
+Scans with false negatives: 0
+Average scan time: 192.586 us
+Scan rate: 5192.5 scans/sec
+Result: FAIL
+First error at scan: 1
+Reference map:       0x000000  000000000000000000000
+First erroneous map: 0x1C0043  111000000000001000011
+Difference mask:     0x1C0043  111000000000001000011
+
+Per-bit errors:
+Bit  Pair   False+   False-
+ 0   RA-RB     9992        0
+ 1   RA-RC     9987        0
+ 6   RB-RC     9986        0
+18   GC-GB     9994        0
+19   GC-GA     9983        0
+20   GB-GA     9984        0
+
+--------------------------------------------------
+Settling delay: 2 us
+Scans: 10000
+Incorrect scans: 10000
+Scans with false positives: 10000
+Scans with false negatives: 0
+Average scan time: 198.650 us
+Scan rate: 5034.0 scans/sec
+Result: FAIL
+First error at scan: 1
+Reference map:       0x000000  000000000000000000000
+First erroneous map: 0x1C0043  111000000000001000011
+Difference mask:     0x1C0043  111000000000001000011
+
+Per-bit errors:
+Bit  Pair   False+   False-
+ 0   RA-RB     9968        0
+ 1   RA-RC     9964        0
+ 6   RB-RC     9981        0
+18   GC-GB     9975        0
+19   GC-GA     9963        0
+20   GB-GA     9970        0
+
+--------------------------------------------------
+Settling delay: 5 us
+Scans: 10000
+Incorrect scans: 10000
+Scans with false positives: 10000
+Scans with false negatives: 0
+Average scan time: 216.716 us
+Scan rate: 4614.3 scans/sec
+Result: FAIL
+First error at scan: 1
+Reference map:       0x000000  000000000000000000000
+First erroneous map: 0x1C0042  111000000000001000010
+Difference mask:     0x1C0042  111000000000001000010
+
+Per-bit errors:
+Bit  Pair   False+   False-
+ 1   RA-RC     9867        0
+ 6   RB-RC     9719        0
+18   GC-GB     9987        0
+19   GC-GA     9985        0
+20   GB-GA     9840        0
+
+--------------------------------------------------
+Settling delay: 10 us
+Scans: 10000
+Incorrect scans: 1
+Scans with false positives: 1
+Scans with false negatives: 0
+Average scan time: 245.496 us
+Scan rate: 4073.4 scans/sec
+Result: FAIL
+First error at scan: 3973
+Reference map:       0x000000  000000000000000000000
+First erroneous map: 0x040000  001000000000000000000
+Difference mask:     0x040000  001000000000000000000
+
+Per-bit errors:
+Bit  Pair   False+   False-
+18   GC-GB        1        0
+
+--------------------------------------------------
+Settling delay: 20 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 305.556 us
+Scan rate: 3272.7 scans/sec
+Result: PASS
+
+--------------------------------------------------
+Settling delay: 50 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 485.916 us
+Scan rate: 2058.0 scans/sec
+Result: PASS
+
+--------------------------------------------------
+Settling delay: 100 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 785.714 us
+Scan rate: 1272.7 scans/sec
+Result: PASS
+
+--------------------------------------------------
+Settling delay: 250 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 1685.714 us
+Scan rate: 593.2 scans/sec
+Result: PASS
+
+--------------------------------------------------
+Settling delay: 500 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 3186.035 us
+Scan rate: 313.9 scans/sec
+Result: PASS
+
+==================================================
+Characterization complete.
