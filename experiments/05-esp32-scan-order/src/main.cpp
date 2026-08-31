@@ -170,7 +170,7 @@ constexpr const char* pairNames[PAIR_COUNT] =
 // This function accepts the pair in either order.
 // ============================================================
 
-constexpr uint8_t canonicalBit(Line first, Line second)
+uint8_t canonicalBit(Line first, Line second)
 {
     uint8_t a = static_cast<uint8_t>(first);
     uint8_t b = static_cast<uint8_t>(second);
@@ -302,6 +302,9 @@ constexpr uint32_t SCANS_PER_CONDITION = 10000;
 
 constexpr uint32_t driveSettlingDelaysUs[] =
 {
+    0,
+    10,
+    20,
     50,
     100,
     150,
