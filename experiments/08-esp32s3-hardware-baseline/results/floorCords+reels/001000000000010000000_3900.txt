@@ -1,0 +1,368 @@
+--- Terminal on /dev/ttyACM0 | 115200 8-N-1
+--- Available filters and text transformations: debug, default, direct, esp32_exception_decoder, hexlify, log2file, nocontrol, printable, send_on_enter, time
+--- More details at https://bit.ly/pio-monitor-filters
+--- Quit: Ctrl+C | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H
+Press any key to start experiment...
+
+Sentinel Experiment 08
+LILYGO T-Display S3 hardware baseline
+
+GPIO mapping:
+  RA = GPIO 1
+  RB = GPIO 2
+  RC = GPIO 10
+  MT = GPIO 16
+  GC = GPIO 11
+  GB = GPIO 12
+  GA = GPIO 13
+BZ = GPIO 21 (reserved; not exercised)
+
+GPIO idle mode: INPUT
+Internal pull-ups: disabled
+External pull-ups: expected
+Test procedure specifies 3.9 kOhm pull-ups.
+Firmware does not verify resistor value.
+
+Configured scan orders:
+Forward: RA -> RB -> RC -> MT -> GC -> GB -> GA
+Reverse: GA -> GB -> GC -> MT -> RC -> RB -> RA
+Interleaved: RA -> GA -> RB -> GB -> RC -> GC -> MT
+
+==================================================
+REFERENCE CHARACTERIZATION
+==================================================
+Reference scan order: Forward
+Reference drive settling:   1000 us
+Reference release settling: 1000 us
+Reference scans:             1000
+
+Candidate reference map: 0x040080  001000000000010000000
+Reference scans agreeing: 1000 / 1000
+Reference status: VALID
+
+==================================================
+SCAN-ORDER CHARACTERIZATION
+==================================================
+Trusted reference map: 0x040080  001000000000010000000
+Scans per condition: 10000
+Experimental release settling: 0 us
+
+--------------------------------------------------
+Scan order: Forward
+Drive settling: 0 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 178.593 us
+Scan rate: 5599.3 scans/sec
+Result: PASS
+
+--------------------------------------------------
+Scan order: Forward
+Drive settling: 1 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 189.188 us
+Scan rate: 5285.8 scans/sec
+Result: PASS
+
+--------------------------------------------------
+Scan order: Forward
+Drive settling: 2 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 194.587 us
+Scan rate: 5139.1 scans/sec
+Result: PASS
+
+--------------------------------------------------
+Scan order: Forward
+Drive settling: 5 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 212.893 us
+Scan rate: 4697.2 scans/sec
+Result: PASS
+
+--------------------------------------------------
+Scan order: Forward
+Drive settling: 10 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 243.184 us
+Scan rate: 4112.1 scans/sec
+Result: PASS
+
+--------------------------------------------------
+Scan order: Forward
+Drive settling: 20 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 303.126 us
+Scan rate: 3299.0 scans/sec
+Result: PASS
+
+--------------------------------------------------
+Scan order: Forward
+Drive settling: 50 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 483.551 us
+Scan rate: 2068.0 scans/sec
+Result: PASS
+
+--------------------------------------------------
+Scan order: Forward
+Drive settling: 100 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 782.609 us
+Scan rate: 1277.8 scans/sec
+Result: PASS
+
+--------------------------------------------------
+Scan order: Reverse
+Drive settling: 0 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 178.620 us
+Scan rate: 5598.5 scans/sec
+Result: PASS
+
+--------------------------------------------------
+Scan order: Reverse
+Drive settling: 1 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 189.284 us
+Scan rate: 5283.1 scans/sec
+Result: PASS
+
+--------------------------------------------------
+Scan order: Reverse
+Drive settling: 2 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 194.472 us
+Scan rate: 5142.1 scans/sec
+Result: PASS
+
+--------------------------------------------------
+Scan order: Reverse
+Drive settling: 5 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 212.929 us
+Scan rate: 4696.4 scans/sec
+Result: PASS
+
+--------------------------------------------------
+Scan order: Reverse
+Drive settling: 10 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 242.991 us
+Scan rate: 4115.4 scans/sec
+Result: PASS
+
+--------------------------------------------------
+Scan order: Reverse
+Drive settling: 20 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 303.348 us
+Scan rate: 3296.5 scans/sec
+Result: PASS
+
+--------------------------------------------------
+Scan order: Reverse
+Drive settling: 50 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 483.661 us
+Scan rate: 2067.6 scans/sec
+Result: PASS
+
+--------------------------------------------------
+Scan order: Reverse
+Drive settling: 100 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 782.678 us
+Scan rate: 1277.7 scans/sec
+Result: PASS
+
+--------------------------------------------------
+Scan order: Interleaved
+Drive settling: 0 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 178.633 us
+Scan rate: 5598.1 scans/sec
+Result: PASS
+
+--------------------------------------------------
+Scan order: Interleaved
+Drive settling: 1 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 189.395 us
+Scan rate: 5280.0 scans/sec
+Result: PASS
+
+--------------------------------------------------
+Scan order: Interleaved
+Drive settling: 2 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 194.542 us
+Scan rate: 5140.3 scans/sec
+Result: PASS
+
+--------------------------------------------------
+Scan order: Interleaved
+Drive settling: 5 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 212.836 us
+Scan rate: 4698.4 scans/sec
+Result: PASS
+
+--------------------------------------------------
+Scan order: Interleaved
+Drive settling: 10 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 242.931 us
+Scan rate: 4116.4 scans/sec
+Result: PASS
+
+--------------------------------------------------
+Scan order: Interleaved
+Drive settling: 20 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 303.627 us
+Scan rate: 3293.5 scans/sec
+Result: PASS
+
+--------------------------------------------------
+Scan order: Interleaved
+Drive settling: 50 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 483.677 us
+Scan rate: 2067.5 scans/sec
+Result: PASS
+
+--------------------------------------------------
+Scan order: Interleaved
+Drive settling: 100 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 782.626 us
+Scan rate: 1277.7 scans/sec
+Result: PASS
+
+==================================================
+SUMMARY
+==================================================
+Order,Drive_us,Release_us,Incorrect,FalsePosScans,FalseNegScans,AvgScan_us
+Forward,0,0,0,0,0,178.593
+Forward,1,0,0,0,0,189.188
+Forward,2,0,0,0,0,194.587
+Forward,5,0,0,0,0,212.893
+Forward,10,0,0,0,0,243.184
+Forward,20,0,0,0,0,303.126
+Forward,50,0,0,0,0,483.551
+Forward,100,0,0,0,0,782.609
+Reverse,0,0,0,0,0,178.620
+Reverse,1,0,0,0,0,189.284
+Reverse,2,0,0,0,0,194.472
+Reverse,5,0,0,0,0,212.929
+Reverse,10,0,0,0,0,242.991
+Reverse,20,0,0,0,0,303.348
+Reverse,50,0,0,0,0,483.661
+Reverse,100,0,0,0,0,782.678
+Interleaved,0,0,0,0,0,178.633
+Interleaved,1,0,0,0,0,189.395
+Interleaved,2,0,0,0,0,194.542
+Interleaved,5,0,0,0,0,212.836
+Interleaved,10,0,0,0,0,242.931
+Interleaved,20,0,0,0,0,303.627
+Interleaved,50,0,0,0,0,483.677
+Interleaved,100,0,0,0,0,782.626
+
+==================================================
+Experiment 08 complete.

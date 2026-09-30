@@ -1100,6 +1100,15 @@ void setup()
 
     delay(2000);
 
+    // Wait for user to press a key before starting
+    Serial.println("Press any key to start experiment...");
+    while (!Serial.available()) {
+        delay(100);
+    }
+    while (Serial.available()) {
+        Serial.read();  // Clear buffer
+    }
+
     idleAllLines();
 
     Serial.println();
