@@ -1,0 +1,537 @@
+--- Terminal on /dev/ttyACM0 | 115200 8-N-1
+--- Available filters and text transformations: debug, default, direct, esp32_exception_decoder, hexlify, log2file, nocontrol, printable, send_on_enter, time
+--- More details at https://bit.ly/pio-monitor-filters
+--- Quit: Ctrl+C | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H
+Press any key to start experiment...
+
+Sentinel Experiment 09
+ESP32-S3 direct GPIO characterization
+
+GPIO mapping:
+  RA = GPIO 1
+  RB = GPIO 2
+  RC = GPIO 10
+  MT = GPIO 16
+  GC = GPIO 11
+  GB = GPIO 12
+  GA = GPIO 13
+BZ = GPIO 21 (reserved; not exercised)
+
+GPIO implementation: direct ESP32-S3 registers
+Input sampling: single GPIO_IN_REG snapshot
+Output latch: LOW
+Drive control: GPIO output-enable set/clear
+Internal pull-ups: disabled
+External pull-ups: expected
+Test procedure specifies 3.9 kOhm pull-ups.
+Firmware does not verify resistor value.
+
+Configured scan orders:
+Forward: RA -> RB -> RC -> MT -> GC -> GB -> GA
+Reverse: GA -> GB -> GC -> MT -> RC -> RB -> RA
+Interleaved: RA -> GA -> RB -> GB -> RC -> GC -> MT
+
+==================================================
+REFERENCE CHARACTERIZATION
+==================================================
+Reference scan order: Forward
+Reference drive settling:   1000 us
+Reference release settling: 1000 us
+Reference scans:             1000
+
+Candidate reference map: 0x1C0000  111000000000000000000
+Reference scans agreeing: 1000 / 1000
+Reference status: VALID
+
+==================================================
+SCAN-ORDER CHARACTERIZATION
+==================================================
+Trusted reference map: 0x1C0000  111000000000000000000
+Scans per condition: 10000
+Experimental release settling: 0 us
+
+--------------------------------------------------
+Scan order: Forward
+Drive settling: 0 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 10000
+Scans with false positives: 10000
+Scans with false negatives: 0
+Average scan time: 5.803 us
+Scan rate: 172309.8 scans/sec
+Result: FAIL
+First error at scan: 1
+Reference map:       0x1C0000  111000000000000000000
+First erroneous map: 0x1C007B  111000000000001111011
+Difference mask:     0x00007B  000000000000001111011
+
+Per-bit errors:
+Bit  Pair   False+   False-
+ 0   RA-RB    10000        0
+ 1   RA-RC    10000        0
+ 3   RA-GC     9983        0
+ 4   RA-GB     9949        0
+ 5   RA-GA     9983        0
+ 6   RB-RC    10000        0
+ 8   RB-GC        1        0
+ 9   RB-GB        1        0
+10   RB-GA        1        0
+12   RC-GC        1        0
+13   RC-GB        1        0
+14   RC-GA        1        0
+
+--------------------------------------------------
+Scan order: Forward
+Drive settling: 1 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 10000
+Scans with false positives: 10000
+Scans with false negatives: 0
+Average scan time: 16.128 us
+Scan rate: 62004.0 scans/sec
+Result: FAIL
+First error at scan: 1
+Reference map:       0x1C0000  111000000000000000000
+First erroneous map: 0x1C0043  111000000000001000011
+Difference mask:     0x000043  000000000000001000011
+
+Per-bit errors:
+Bit  Pair   False+   False-
+ 0   RA-RB    10000        0
+ 1   RA-RC    10000        0
+ 6   RB-RC     9998        0
+
+--------------------------------------------------
+Scan order: Forward
+Drive settling: 2 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 9893
+Scans with false positives: 9893
+Scans with false negatives: 0
+Average scan time: 21.507 us
+Scan rate: 46496.9 scans/sec
+Result: FAIL
+First error at scan: 1
+Reference map:       0x1C0000  111000000000000000000
+First erroneous map: 0x1C0043  111000000000001000011
+Difference mask:     0x000043  000000000000001000011
+
+Per-bit errors:
+Bit  Pair   False+   False-
+ 0   RA-RB     9893        0
+ 1   RA-RC     9893        0
+ 6   RB-RC     9893        0
+
+--------------------------------------------------
+Scan order: Forward
+Drive settling: 3 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 9937
+Scans with false positives: 9937
+Scans with false negatives: 0
+Average scan time: 27.167 us
+Scan rate: 36809.8 scans/sec
+Result: FAIL
+First error at scan: 1
+Reference map:       0x1C0000  111000000000000000000
+First erroneous map: 0x1C0043  111000000000001000011
+Difference mask:     0x000043  000000000000001000011
+
+Per-bit errors:
+Bit  Pair   False+   False-
+ 0   RA-RB     9681        0
+ 1   RA-RC     9937        0
+ 6   RB-RC      486        0
+
+--------------------------------------------------
+Scan order: Forward
+Drive settling: 5 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 1139
+Scans with false positives: 1139
+Scans with false negatives: 0
+Average scan time: 37.985 us
+Scan rate: 26326.1 scans/sec
+Result: FAIL
+First error at scan: 10
+Reference map:       0x1C0000  111000000000000000000
+First erroneous map: 0x1C0002  111000000000000000010
+Difference mask:     0x000002  000000000000000000010
+
+Per-bit errors:
+Bit  Pair   False+   False-
+ 1   RA-RC     1139        0
+
+--------------------------------------------------
+Scan order: Forward
+Drive settling: 10 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 68.180 us
+Scan rate: 14667.0 scans/sec
+Result: PASS
+
+--------------------------------------------------
+Scan order: Forward
+Drive settling: 20 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 128.576 us
+Scan rate: 7777.5 scans/sec
+Result: PASS
+
+--------------------------------------------------
+Scan order: Forward
+Drive settling: 50 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 307.693 us
+Scan rate: 3250.0 scans/sec
+Result: PASS
+
+--------------------------------------------------
+Scan order: Reverse
+Drive settling: 0 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 10000
+Scans with false positives: 10000
+Scans with false negatives: 0
+Average scan time: 5.642 us
+Scan rate: 177254.7 scans/sec
+Result: FAIL
+First error at scan: 1
+Reference map:       0x1C0000  111000000000000000000
+First erroneous map: 0x1C4443  111000100010001000011
+Difference mask:     0x004443  000000100010001000011
+
+Per-bit errors:
+Bit  Pair   False+   False-
+ 0   RA-RB     9996        0
+ 1   RA-RC    10000        0
+ 5   RA-GA       32        0
+ 6   RB-RC    10000        0
+10   RB-GA     9985        0
+14   RC-GA    10000        0
+
+--------------------------------------------------
+Scan order: Reverse
+Drive settling: 1 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 9955
+Scans with false positives: 9955
+Scans with false negatives: 0
+Average scan time: 16.214 us
+Scan rate: 61674.0 scans/sec
+Result: FAIL
+First error at scan: 1
+Reference map:       0x1C0000  111000000000000000000
+First erroneous map: 0x1C0043  111000000000001000011
+Difference mask:     0x000043  000000000000001000011
+
+Per-bit errors:
+Bit  Pair   False+   False-
+ 0   RA-RB     8460        0
+ 1   RA-RC     9955        0
+ 6   RB-RC     9955        0
+10   RB-GA        5        0
+
+--------------------------------------------------
+Scan order: Reverse
+Drive settling: 2 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 9972
+Scans with false positives: 9972
+Scans with false negatives: 0
+Average scan time: 22.422 us
+Scan rate: 44599.1 scans/sec
+Result: FAIL
+First error at scan: 1
+Reference map:       0x1C0000  111000000000000000000
+First erroneous map: 0x1C0042  111000000000001000010
+Difference mask:     0x000042  000000000000001000010
+
+Per-bit errors:
+Bit  Pair   False+   False-
+ 0   RA-RB       77        0
+ 1   RA-RC     9963        0
+ 6   RB-RC     9972        0
+10   RB-GA        1        0
+
+--------------------------------------------------
+Scan order: Reverse
+Drive settling: 3 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 9948
+Scans with false positives: 9948
+Scans with false negatives: 0
+Average scan time: 26.658 us
+Scan rate: 37511.9 scans/sec
+Result: FAIL
+First error at scan: 1
+Reference map:       0x1C0000  111000000000000000000
+First erroneous map: 0x1C0042  111000000000001000010
+Difference mask:     0x000042  000000000000001000010
+
+Per-bit errors:
+Bit  Pair   False+   False-
+ 1   RA-RC     4218        0
+ 6   RB-RC     9948        0
+
+--------------------------------------------------
+Scan order: Reverse
+Drive settling: 5 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 138
+Scans with false positives: 138
+Scans with false negatives: 0
+Average scan time: 37.974 us
+Scan rate: 26333.7 scans/sec
+Result: FAIL
+First error at scan: 21
+Reference map:       0x1C0000  111000000000000000000
+First erroneous map: 0x1C0040  111000000000001000000
+Difference mask:     0x000040  000000000000001000000
+
+Per-bit errors:
+Bit  Pair   False+   False-
+ 6   RB-RC      138        0
+
+--------------------------------------------------
+Scan order: Reverse
+Drive settling: 10 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 68.182 us
+Scan rate: 14666.7 scans/sec
+Result: PASS
+
+--------------------------------------------------
+Scan order: Reverse
+Drive settling: 20 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 127.660 us
+Scan rate: 7833.3 scans/sec
+Result: PASS
+
+--------------------------------------------------
+Scan order: Reverse
+Drive settling: 50 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 307.693 us
+Scan rate: 3250.0 scans/sec
+Result: PASS
+
+--------------------------------------------------
+Scan order: Interleaved
+Drive settling: 0 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 10000
+Scans with false positives: 10000
+Scans with false negatives: 0
+Average scan time: 6.770 us
+Scan rate: 147717.0 scans/sec
+Result: FAIL
+First error at scan: 1
+Reference map:       0x1C0000  111000000000000000000
+First erroneous map: 0x1C777B  111000111011101111011
+Difference mask:     0x00777B  000000111011101111011
+
+Per-bit errors:
+Bit  Pair   False+   False-
+ 0   RA-RB    10000        0
+ 1   RA-RC    10000        0
+ 3   RA-GC      513        0
+ 4   RA-GB     9938        0
+ 5   RA-GA     9982        0
+ 6   RB-RC     9999        0
+ 8   RB-GC     9999        0
+ 9   RB-GB     9999        0
+10   RB-GA     9999        0
+12   RC-GC     9999        0
+13   RC-GB     9991        0
+14   RC-GA     9999        0
+
+--------------------------------------------------
+Scan order: Interleaved
+Drive settling: 1 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 10000
+Scans with false positives: 10000
+Scans with false negatives: 0
+Average scan time: 16.049 us
+Scan rate: 62310.7 scans/sec
+Result: FAIL
+First error at scan: 1
+Reference map:       0x1C0000  111000000000000000000
+First erroneous map: 0x1C0043  111000000000001000011
+Difference mask:     0x000043  000000000000001000011
+
+Per-bit errors:
+Bit  Pair   False+   False-
+ 0   RA-RB     9980        0
+ 1   RA-RC     9980        0
+ 6   RB-RC     9990        0
+
+--------------------------------------------------
+Scan order: Interleaved
+Drive settling: 2 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 9999
+Scans with false positives: 9999
+Scans with false negatives: 0
+Average scan time: 22.224 us
+Scan rate: 44995.8 scans/sec
+Result: FAIL
+First error at scan: 1
+Reference map:       0x1C0000  111000000000000000000
+First erroneous map: 0x1C0043  111000000000001000011
+Difference mask:     0x000043  000000000000001000011
+
+Per-bit errors:
+Bit  Pair   False+   False-
+ 0   RA-RB     9998        0
+ 1   RA-RC     9999        0
+ 6   RB-RC     9998        0
+
+--------------------------------------------------
+Scan order: Interleaved
+Drive settling: 3 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 9960
+Scans with false positives: 9960
+Scans with false negatives: 0
+Average scan time: 27.252 us
+Scan rate: 36694.3 scans/sec
+Result: FAIL
+First error at scan: 1
+Reference map:       0x1C0000  111000000000000000000
+First erroneous map: 0x1C0003  111000000000000000011
+Difference mask:     0x000003  000000000000000000011
+
+Per-bit errors:
+Bit  Pair   False+   False-
+ 0   RA-RB     9790        0
+ 1   RA-RC     9960        0
+ 6   RB-RC      224        0
+
+--------------------------------------------------
+Scan order: Interleaved
+Drive settling: 5 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 9698
+Scans with false positives: 9698
+Scans with false negatives: 0
+Average scan time: 39.409 us
+Scan rate: 25374.8 scans/sec
+Result: FAIL
+First error at scan: 1
+Reference map:       0x1C0000  111000000000000000000
+First erroneous map: 0x1C0002  111000000000000000010
+Difference mask:     0x000002  000000000000000000010
+
+Per-bit errors:
+Bit  Pair   False+   False-
+ 1   RA-RC     9698        0
+
+--------------------------------------------------
+Scan order: Interleaved
+Drive settling: 10 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 67.942 us
+Scan rate: 14718.5 scans/sec
+Result: PASS
+
+--------------------------------------------------
+Scan order: Interleaved
+Drive settling: 20 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 128.206 us
+Scan rate: 7800.0 scans/sec
+Result: PASS
+
+--------------------------------------------------
+Scan order: Interleaved
+Drive settling: 50 us
+Release settling: 0 us
+Scans: 10000
+Incorrect scans: 0
+Scans with false positives: 0
+Scans with false negatives: 0
+Average scan time: 307.695 us
+Scan rate: 3250.0 scans/sec
+Result: PASS
+
+==================================================
+SUMMARY
+==================================================
+Order,Drive_us,Release_us,Incorrect,FalsePosScans,FalseNegScans,AvgScan_us
+Forward,0,0,10000,10000,0,5.803
+Forward,1,0,10000,10000,0,16.128
+Forward,2,0,9893,9893,0,21.507
+Forward,3,0,9937,9937,0,27.167
+Forward,5,0,1139,1139,0,37.985
+Forward,10,0,0,0,0,68.180
+Forward,20,0,0,0,0,128.576
+Forward,50,0,0,0,0,307.693
+Reverse,0,0,10000,10000,0,5.642
+Reverse,1,0,9955,9955,0,16.214
+Reverse,2,0,9972,9972,0,22.422
+Reverse,3,0,9948,9948,0,26.658
+Reverse,5,0,138,138,0,37.974
+Reverse,10,0,0,0,0,68.182
+Reverse,20,0,0,0,0,127.660
+Reverse,50,0,0,0,0,307.693
+Interleaved,0,0,10000,10000,0,6.770
+Interleaved,1,0,10000,10000,0,16.049
+Interleaved,2,0,9999,9999,0,22.224
+Interleaved,3,0,9960,9960,0,27.252
+Interleaved,5,0,9698,9698,0,39.409
+Interleaved,10,0,0,0,0,67.942
+Interleaved,20,0,0,0,0,128.206
+Interleaved,50,0,0,0,0,307.695
+
+==================================================
+Experiment 09 complete.
