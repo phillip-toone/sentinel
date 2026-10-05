@@ -1,87 +1,151 @@
-# Status
+# Sentinel Project Status
+
+## Purpose
+
+This document is the authoritative current-state summary for Sentinel.
+
+Use it to answer four questions:
+
+1.  Where is the project now?
+2.  What has been established?
+3.  What remains uncertain?
+4.  What should be worked on next?
+
+Detailed experimental methods and raw evidence belong under
+`experiments/`. Architectural reasoning belongs in
+`docs/rationale/DESIGN_RATIONALE.md`. Normative behavior belongs in
+`docs/specifications/`.
+
+------------------------------------------------------------------------
 
 ## Current Phase
 
-Hardware Integration
+**ESP32-S3 scanner integration and transition to the game engine**
 
-## Current Milestone
+The scanner-characterization phase has answered the major electrical and
+performance questions that originally blocked implementation.
 
-ESP32 Continuity Scanner Electrical Interface Characterization
+The next major task is to promote the experimentally validated ESP32-S3
+scanner into Sentinel's hardware layer while preserving the
+processor-independent `ContinuityMap` boundary, then move upward into
+game-engine work.
+
+Further optimization of minimum scan time is not currently a project
+requirement.
+
+------------------------------------------------------------------------
 
 ## Current Version
 
+``` text
 v0.1.0
+```
 
-## Project State
+------------------------------------------------------------------------
 
-Sentinel has progressed from architecture and domain modeling through
-processor-independent scanner implementation, desktop validation, and initial
-ESP32 hardware characterization.
+## Current Repository Checkpoint
 
-The processor-independent continuity scanner remains intact.
+The latest completed scanner experiment and documentation were committed
+and pushed through:
 
-A complete seven-line scan measuring all 21 unique electrical relationships has
-now been demonstrated on real ESP32 hardware with realistic fencing floor cords
-and reels.
+``` text
+610c8b7  Document ESP32-S3 direct GPIO experiment
+```
 
-Early hardware testing reproduced the historical observation that long fencing
-cabling can cause unreliable measurements when the scanner is operated with
-insufficient electrical settling time.
+At that checkpoint:
 
-Experiments 01 through 07 progressively characterized that behavior.
+``` text
+branch: main
+local: synchronized with origin/main
+working tree: clean
+```
 
-The most important current finding is that the full 21-pair scan remains
-viable. The observed reliability problem is strongly influenced by the
-electrical interface, particularly pull-up resistance and drive-to-sample
-settling behavior.
+------------------------------------------------------------------------
 
-No production pull-up resistance or production settling-time constant has yet
-been selected.
+## Core Architecture
 
----
+Sentinel separates electrical measurement from fencing interpretation.
 
-## Completed Specifications
+The continuity scanner measures the electrical system and produces a
+canonical `ContinuityMap`.
 
-The following specifications define the current scanner architecture:
+It does not determine:
 
-- `docs/specifications/ELECTRICAL_MODEL.md`
-- `docs/specifications/CONTINUITY_SCANNER.md`
+-   foil, épée, or sabre rules
+-   touches
+-   lockout timing
+-   scoring
+-   display state
+-   buzzer behavior
 
-The design reasoning leading to the current architecture is preserved in:
+Those belong to higher layers.
 
-- `docs/rationale/DESIGN_RATIONALE.md`
+The processor-independent scanner is intentionally independent of:
 
-These documents should be reviewed before making architectural changes to the
-scanner.
+-   processor family
+-   GPIO numbering
+-   board layout
+-   electrical polarity
+-   physical scan order
+-   fencing game rules
+-   scoring logic
 
----
+Hardware-specific behavior belongs in the hardware-facing
+implementation.
 
-## Implemented Scanner Components
+------------------------------------------------------------------------
 
-The following processor-independent firmware components have been implemented:
+## Completed Scanner Specifications
 
-- `firmware/scanner/Line.h`
-- `firmware/scanner/ContinuityMap.h`
-- `firmware/scanner/ContinuityScanner.h`
+The current scanner architecture is defined by:
 
-The scanner is intentionally independent of:
+-   `docs/specifications/ELECTRICAL_MODEL.md`
+-   `docs/specifications/CONTINUITY_SCANNER.md`
 
-- processor family
-- GPIO numbering
-- board layout
-- fencing game rules
-- electrical polarity
-- scoring logic
+The reasoning behind the architecture is preserved in:
 
-Hardware-specific behavior is supplied through a hardware-facing interface.
+-   `docs/rationale/DESIGN_RATIONALE.md`
 
----
+These documents should be reviewed before changing the
+processor-independent scanner model.
 
-## Continuity Representation
+------------------------------------------------------------------------
+
+## Implemented Processor-Independent Scanner
+
+The following components have been implemented:
+
+-   `firmware/scanner/Line.h`
+-   `firmware/scanner/ContinuityMap.h`
+-   `firmware/scanner/ContinuityScanner.h`
+
+Desktop validation includes:
+
+-   `tests/scanner_smoke_test.cpp`
+-   `tests/MockNodeIO.h`
+-   `tests/continuity_scanner_test.cpp`
+
+Verified behavior includes:
+
+-   all 21 canonical line-pair bit assignments
+-   symmetry of continuity queries
+-   isolated continuity connections
+-   transitive electrical connectivity
+-   multiple independent connected components
+-   correct isolation between components
+
+`MockNodeIO` models physical electrical connectivity rather than merely
+returning predetermined scanner answers. This allows the logical scanner
+to remain independently testable as the physical hardware implementation
+evolves.
+
+------------------------------------------------------------------------
+
+## Continuity Model
 
 Sentinel models seven logical fencing lines:
 
-```text
+``` text
 RA
 RB
 RC
@@ -91,939 +155,640 @@ GB
 GA
 ```
 
-These produce 21 unique unordered line pairs.
+These produce 21 unique unordered electrical relationships.
 
-The canonical 21-pair ordering is defined in:
+One complete electrical snapshot is represented by a canonical
+`ContinuityMap`.
 
-```text
-docs/specifications/ELECTRICAL_MODEL.md
-```
-
-One complete electrical snapshot is represented by a `ContinuityMap`.
-
-Measurement order is intentionally independent of canonical bitmap order.
-
+Physical measurement order does not determine canonical bit position.
 For example:
 
-```text
+``` text
 drive RA -> sense RC
 ```
 
 and:
 
-```text
+``` text
 drive RC -> sense RA
 ```
 
-both represent the same canonical relationship:
+both represent:
 
-```text
+``` text
 RA-RC
 ```
 
-This distinction became important during hardware characterization because
-different physical measurement orders can exhibit different transient
-behavior while still representing the same logical continuity relationship.
+This separation remained valid throughout hardware characterization and
+should be preserved.
 
----
+------------------------------------------------------------------------
 
-## Desktop Validation
+## Current Hardware Platform
 
-The processor-independent scanner has been compiled and tested successfully
-using C++20 with warnings enabled.
+The current development platform is:
 
-The following behavior has been verified:
-
-- all 21 canonical line-pair bit assignments
-- symmetry of continuity queries
-- single isolated continuity connections
-- transitive electrical connectivity
-- multiple independent connected components
-- correct isolation between independent components
-
-The current test infrastructure includes:
-
-- `tests/scanner_smoke_test.cpp`
-- `tests/MockNodeIO.h`
-- `tests/continuity_scanner_test.cpp`
-
-`MockNodeIO` models physical electrical connectivity rather than simply
-returning predetermined scanner answers.
-
-For example:
-
-```text
-RA ----- GC ----- MT
+``` text
+LILYGO T-Display S3
+ESP32-S3
 ```
 
-is treated as one connected electrical component, so the simulated electrical
-model reports:
+Experiment 08 established this board as a viable Sentinel scanner
+platform.
 
-```text
-RA-GC = continuity
-RA-MT = continuity
-GC-MT = continuity
+The current continuity GPIO assignment is:
+
+  Sentinel line     GPIO
+  --------------- ------
+  RA                   1
+  RB                   2
+  RC                  10
+  MT                  16
+  GC                  11
+  GB                  12
+  GA                  13
+
+The current proposed buzzer assignment is:
+
+``` text
+BZ = GPIO21
 ```
 
-This allows the processor-independent scanner to be validated independently of
-the physical ESP32 interface.
+BZ was not part of Experiments 08 or 09 scanner characterization.
 
----
+All seven continuity GPIOs reside in the ESP32-S3 GPIO0-31 bank. This
+allows one GPIO input-register read to capture the physical state of all
+seven continuity lines.
 
-## ESP32 Development Environment
+### Development-board resource tradeoffs
 
-A working ESP32 development environment has been established on the Linux Mint
-development machine using PlatformIO and Visual Studio Code.
+The current non-touch T-Display S3 allocation intentionally preserves:
 
-The workflow has been demonstrated through repeated experimental development:
+``` text
+GPIO17 / GPIO18
+    I2C
 
-```text
-Sentinel repository
+GPIO43 / GPIO44
+    UART / general expansion
+```
+
+The scanner consumes GPIO11/12/13, so the optional T-Display S3 SD-card
+interface is not preserved.
+
+The current allocation targets the non-touch T-Display S3. Touch-board
+support would require reconsidering GPIO16/17/18/21.
+
+These are development-board implementation constraints, not Sentinel
+architectural requirements. A future custom Sentinel PCB may use a
+different physical GPIO allocation.
+
+------------------------------------------------------------------------
+
+## Current Electrical Interface
+
+The leading scanner-interface candidate uses:
+
+``` text
+3.9 kOhm external pull-up
+```
+
+on each of the seven continuity lines.
+
+ESP32 internal pull-ups are disabled.
+
+Measurement remains active-low:
+
+``` text
+released line
+    output driver disabled
+    external pull-up restores HIGH
+
+selected line
+    output latch LOW
+    output driver enabled
+    line driven LOW
+
+connected sense line
+    LOW
+
+unconnected sense line
+    HIGH
+```
+
+Experiment 07 demonstrated that pull-up resistance strongly affects
+settling behavior. Experiments 08 and 09 then carried 3.9 kOhm forward
+onto the ESP32-S3 platform.
+
+3.9 kOhm is the current leading candidate, not an immutable production
+specification.
+
+------------------------------------------------------------------------
+
+## Current ESP32-S3 Measurement Implementation
+
+Experiment 09 replaced Arduino per-measurement GPIO operations with
+direct ESP32-S3 GPIO register access.
+
+The seven GPIO pads are configured once. Their output latches remain
+LOW. A driven phase is then conceptually:
+
+``` text
+enable selected output driver
         |
         v
-PlatformIO build
+wait explicit drive-to-sample interval
         |
         v
-ESP32 upload
+read GPIO0-31 input register once
         |
         v
-serial monitor
+interpret required sense bits
         |
         v
-raw experimental results
-        |
-        v
-repository documentation
+disable selected output driver
 ```
 
-The current experimental board is a TTGO T-Display based on the classic ESP32.
+This removes repeated `pinMode()`, `digitalWrite()`, and `digitalRead()`
+operations from the measurement loop.
 
-The current experimental GPIO mapping used by the principal scanner tests is:
+It also captures the continuity-line states from one physical
+input-register snapshot rather than sequential sense reads.
 
-```text
-RA = GPIO21
-RB = GPIO22
-RC = GPIO17
-MT = GPIO32
-GC = GPIO25
-GB = GPIO26
-GA = GPIO27
+The principal advantage is not simply speed. It makes the electrical
+measurement interval substantially more explicit and deterministic.
+
+------------------------------------------------------------------------
+
+## Current Timing Baseline
+
+The current conservative candidate is:
+
+``` text
+explicit drive-to-sample settling: 20 us
+explicit release settling:          0 us
 ```
 
-These assignments are experimental and are not considered part of Sentinel's
-processor-independent architecture.
+This requires careful interpretation.
 
-A future board may use different GPIO assignments.
+Experiment 09 did **not** establish that 20 us is the exact minimum
+reliable settling interval.
 
----
+It established that:
 
-## Historical Measurement Method
+-   10 us still produced failures in some tested conditions.
+-   20 us was the first tested point with no observed errors across the
+    complete Experiment 09 matrix.
+-   50 us was also error-free across that matrix.
 
-The earlier fencing scoring apparatus used an active-low continuity
-measurement method equivalent to:
+The actual transition for the most difficult tested conditions lies
+somewhere between the tested 10 us and 20 us points.
 
-```cpp
-void setPIN(short pin) {
-    pinMode(pin, OUTPUT);
-    digitalWrite(pin, LOW);
-    delay(1);
-}
+Finding the exact minimum is not currently necessary for scanner
+performance.
 
-void unsetPIN(short pin) {
-    pinMode(pin, INPUT_PULLUP);
-    digitalWrite(pin, HIGH);
-}
+------------------------------------------------------------------------
+
+## Experiment 08 --- ESP32-S3 Hardware Baseline
+
+Directory:
+
+``` text
+experiments/08-esp32s3-hardware-baseline/
 ```
 
-The historical implementation therefore waited approximately 1 millisecond
-after driving a line LOW before evaluating continuity.
+Experiment 08 migrated the existing Arduino-based scanner to the LILYGO
+T-Display S3 using 3.9 kOhm external pull-ups.
 
-That delay was selected empirically because it worked with realistic fencing
-cabling.
+It tested:
 
-It was not originally characterized or optimized.
-
-The Sentinel hardware experiments began by investigating whether that
-historical delay was necessary for a complete 21-pair scan.
-
----
-
-## Full 21-Pair Scan
-
-A complete seven-line scan requires six driven-line phases and 21 unique
-measurements.
-
-One canonical ordering is:
-
-```text
-Drive RA -> observe RB, RC, MT, GC, GB, GA
-Drive RB -> observe RC, MT, GC, GB, GA
-Drive RC -> observe MT, GC, GB, GA
-Drive MT -> observe GC, GB, GA
-Drive GC -> observe GB, GA
-Drive GB -> observe GA
+``` text
+28 topologies
+3 scan orders
+10,000 scans per condition
 ```
 
-This produces:
+at explicit drive-settling points:
 
-```text
-6 + 5 + 4 + 3 + 2 + 1 = 21
+``` text
+0, 1, 2, 5, 10, 20, 50, 100 us
 ```
 
-unique unordered relationships.
+All 28 topology files established valid 1000/1000 trusted references.
 
-The original concern was that reproducing the historical 1 millisecond delay
-for all six driven phases would require approximately:
+Every tested condition at 1 us explicit drive settling or greater
+completed without observed error.
 
-```text
+At 1 us alone:
+
+``` text
+28 topologies
+x 3 scan orders
+x 10,000 scans
+=
+840,000 complete scans
+```
+
+were observed without error.
+
+Zero explicit delay was nearly reliable but produced small error counts
+in some topology/order combinations.
+
+The important limitation was that Arduino GPIO operations themselves
+consumed substantial execution time. Therefore the configured explicit
+delay did not represent the complete physical drive-to-sample interval.
+
+See:
+
+``` text
+experiments/08-esp32s3-hardware-baseline/README.md
+```
+
+for detailed methods, results, and raw evidence.
+
+------------------------------------------------------------------------
+
+## Experiment 09 --- Direct GPIO Characterization
+
+Directory:
+
+``` text
+experiments/09-esp32s3-direct-gpio/
+```
+
+Experiment 09 retained the Experiment 08 hardware and 3.9 kOhm pull-ups
+while replacing Arduino per-measurement GPIO operations with direct
+ESP32-S3 register access.
+
+It tested:
+
+``` text
+32 topologies
+3 scan orders
+10,000 scans per condition
+```
+
+at explicit drive-settling points:
+
+``` text
+0, 1, 2, 3, 5, 10, 20, 50 us
+```
+
+All 32 topology files established valid trusted references.
+
+The important aggregate result was:
+
+  -----------------------------------------------------------------------
+     Explicit drive   Conditions with   Total incorrect              Mean
+              delay            errors             scans     complete-scan
+                                                                     time
+  ----------------- ----------------- ----------------- -----------------
+               0 us           96 / 96           959,526           6.09 us
+
+               1 us           90 / 96           899,907          16.44 us
+
+               2 us           90 / 96           895,278          21.70 us
+
+               3 us           90 / 96           887,482          27.05 us
+
+               5 us           82 / 96           514,109          38.56 us
+
+              10 us           18 / 96            76,680          68.38 us
+
+          **20 us**        **0 / 96**             **0**     **128.23 us**
+
+          **50 us**        **0 / 96**             **0**     **307.89 us**
+  -----------------------------------------------------------------------
+
+At the tested 20 us point:
+
+``` text
+32 topologies
+x 3 scan orders
+x 10,000 scans
+=
+960,000 complete scans
+```
+
+were observed without error.
+
+The mean complete 21-pair scan time was approximately:
+
+``` text
+128 us
+```
+
+or roughly:
+
+``` text
+7,800 complete maps per second
+```
+
+See:
+
+``` text
+experiments/09-esp32s3-direct-gpio/README.md
+```
+
+for detailed methods, interpretation, and raw results.
+
+------------------------------------------------------------------------
+
+## What Experiments 08 and 09 Established
+
+Experiment 08 appeared nearly reliable with zero explicit delay and
+fully reliable within its tested matrix at 1 us.
+
+Experiment 09 showed why those explicit-delay numbers could not be
+interpreted as the actual electrical settling requirement.
+
+Removing Arduino GPIO overhead changed the observed behavior
+dramatically:
+
+``` text
+0-5 us
+    broadly unreliable
+
+10 us
+    substantially improved but still insufficient
+
+20 us
+    first universally error-free tested point
+
+50 us
+    universally error-free tested point
+```
+
+The central conclusion is:
+
+> Software overhead must not be confused with an electrical timing
+> guarantee.
+
+The direct-register implementation is preferable because the
+drive-to-sample interval is substantially more explicit.
+
+------------------------------------------------------------------------
+
+## Scanner Performance Conclusion
+
+The historical scoring apparatus used approximately:
+
+``` text
+1 ms
+```
+
+of settling per driven-line phase.
+
+A six-phase complete scan at that timing would spend approximately:
+
+``` text
 6 ms
 ```
 
-of settling time per complete electrical snapshot.
+in explicit settling alone.
 
-Hardware characterization was therefore undertaken before changing the
-architecture or abandoning the full scan.
+Experiment 09 produced complete 21-pair maps at the tested 20 us
+settling point in approximately:
 
-The experimental evidence now supports retaining the full 21-pair model.
-
----
-
-# Hardware Experiment History
-
-The experimental record is preserved under:
-
-```text
-experiments/
+``` text
+128 us
 ```
 
-Each completed experiment contains source code and, where applicable,
-methodology, raw serial output, and a README describing the current
-interpretation of the evidence.
+on average.
 
-The README conclusions are intentionally revisable as later experiments
-provide additional information.
+The complete 21-pair measurement architecture therefore has substantial
+performance margin on the ESP32-S3.
 
----
+There is no current performance justification for reducing the
+measurement model or continuing to optimize settling merely for scan
+speed.
 
-## Experiment 01 — ESP32 Settling Time
+------------------------------------------------------------------------
 
-Directory:
+## Current Experiment Record
 
-```text
-experiments/01-esp32-settling-time/
-```
+The hardware-characterization sequence is:
 
-Purpose:
-
-Characterize a simple driven-line/sense-line measurement and determine whether
-an explicit settling delay is required for an isolated continuity
-measurement.
-
-Short jumper wiring and realistic cable loading were tested.
-
-### Finding
-
-The simple isolated measurement could operate with little or no explicit
-settling delay under the tested conditions.
-
-### Importance
-
-This demonstrated that the ESP32 GPIO transition itself did not justify the
-historical 1 millisecond delay.
-
-However, the experiment did not reproduce the electrical history of a complete
-rapidly switched 21-pair scan.
-
----
-
-## Experiment 02 — ESP32 Full Scan
-
-Directory:
-
-```text
-experiments/02-esp32-full-scan/
-```
-
-Purpose:
-
-Test the complete six-phase / 21-pair scan on real hardware.
-
-### Finding
-
-Short wiring behaved well, but realistic floor cords and reels produced
-substantial structured false-positive continuity measurements at short
-settling intervals.
-
-The errors were not random.
-
-Certain logical relationships repeatedly appeared together.
-
-### Methodological Finding
-
-The initial expected-map methodology was not sufficiently trustworthy because
-the scanner could establish an expected map using the same potentially
-unsettled measurement process being evaluated.
-
-Later experiments therefore adopted a conservative trusted-reference
-procedure.
-
----
-
-## Experiment 03 — Full-Scan Characterization
-
-Directory:
-
-```text
-experiments/03-esp32-full-scan-characterization/
-```
-
-Purpose:
-
-Characterize drive-to-sample settling systematically using a trusted reference.
-
-### Trusted Reference
-
-A reference map was established using conservative 1 millisecond settling and
-required repeated unanimous scans.
-
-### Finding
-
-The settling interval required for reliable scanning depended strongly on
-external cabling and electrical topology.
-
-Realistic floor cords and reels required substantially more settling than
-short local wiring.
-
-The experiment confirmed that the long-cable problem was real and
-repeatable.
-
----
-
-## Experiment 04 — Drive vs. Release Settling
-
-Directory:
-
-```text
-experiments/04-esp32-drive-release-settling/
-```
-
-Purpose:
-
-Separate two possible timing requirements:
-
-```text
-drive LOW
-    |
-    v
-wait
-    |
-    v
-sample
-```
-
-versus:
-
-```text
-release previous line
-    |
-    v
-wait
-    |
-    v
-drive next line
-```
-
-### Finding
-
-The observed failure mechanism was corrected by sufficient
-drive-to-sample settling.
-
-Adding release-only settling through the tested range did not provide the same
-benefit.
-
-### Conclusion
-
-For the observed failures, the important timing interval is:
-
-> time after driving a line LOW and before sampling the sense lines.
-
-Release settling was therefore retained at zero in subsequent
-characterization unless a later experiment provided evidence otherwise.
-
----
-
-## Experiment 05 — Scan-Order Characterization
-
-Directory:
-
-```text
-experiments/05-esp32-scan-order/
-```
-
-Purpose:
-
-Determine whether the structured false-positive measurements depend on scan
-order.
-
-Three orders were tested:
-
-```text
-Forward:
-RA -> RB -> RC -> MT -> GC -> GB -> GA
-
-Reverse:
-GA -> GB -> GC -> MT -> RC -> RB -> RA
-
-Interleaved:
-RA -> GA -> RB -> GB -> RC -> GC -> MT
-```
-
-The program translated every physical measurement back into the same canonical
-21-bit representation.
-
-### Major Finding
-
-Scan order can dramatically affect reliability when the electrical interface
-is operating near its settling limit.
-
-For the difficult topology:
-
-```text
-100000000000000000001
-```
-
-at 100 us drive settling, the recorded results included:
-
-```text
-Forward:       9988 / 10000 incorrect
-Reverse:          0 / 10000 incorrect
-Interleaved:  10000 / 10000 incorrect
-```
-
-The Forward and Interleaved failures were associated with false-positive
-RA-RC measurements.
-
-All three orders passed the tested 150 us condition.
-
-### Interpretation
-
-Scan order matters under marginal electrical conditions.
-
-However, changing order also changes measurement direction for some unordered
-pairs, so the experiment did not establish scan order itself as the physical
-cause.
-
----
-
-## Experiment 06 — GPIO Reassignment
-
-Directory:
-
-```text
-experiments/06-esp32-gpio-reassignment/
-```
-
-Purpose:
-
-Determine whether the observed structured behavior was strongly associated
-with the original ESP32 GPIO assignment.
-
-The experimental mapping was changed from:
-
-```text
-RA = 21
-RB = 22
-RC = 17
-MT = 32
-GC = 25
-GB = 26
-GA = 27
-```
-
-to:
-
-```text
-RA = 21
-RB = 32
-RC = 17
-MT = 25
-GC = 26
-GB = 33
-GA = 13
-```
-
-Five of seven logical lines therefore moved to different GPIOs.
-
-### Finding
-
-GPIO reassignment changed some detailed settling behavior but did not eliminate
-the phenomenon.
-
-Scan order and topology remained important under marginal settling
-conditions.
-
-### Important Limitation
-
-RA and RC remained on GPIO21 and GPIO17.
-
-Therefore persistence of RA-RC behavior could not distinguish between:
-
-```text
-logical/external RA-RC behavior
-```
-
-and:
-
-```text
-physical GPIO21-GPIO17 behavior
-```
-
-Experiment 06 therefore weakened a simple explanation based on the complete
-original GPIO assignment but did not identify the physical mechanism.
-
----
-
-## Experiment 07 — External Pull-Up Characterization
-
-Directory:
-
-```text
-experiments/07-esp32-external-pullups/
-```
-
-Purpose:
-
-Determine how external pull-up resistance affects scanner settling and
-reliability.
-
-### Electrical Change
-
-Earlier experiments used ESP32:
-
-```text
-INPUT_PULLUP
-```
-
-for released and sensed lines.
-
-Experiment 07 instead used:
-
-```text
-INPUT
-```
-
-and supplied external pull-up resistors.
-
-Five resistor values were tested:
-
-```text
-1.8 kΩ
-3.9 kΩ
-8.2 kΩ
-15 kΩ
-33 kΩ
-```
-
-Three electrical topologies were tested with all five resistor values,
-producing 15 raw result files.
-
-Each configuration retained the Forward, Reverse, and Interleaved scan orders
-and tested:
-
-```text
-0 us
-10 us
-20 us
-50 us
-100 us
-150 us
-200 us
-```
-
-of explicit drive-to-sample settling.
-
-### Major Result
-
-External pull-up resistance had a large and systematic effect on the required
-settling interval.
-
-The first tested drive-settling value at which all three scan orders completed
-10,000 scans without observed error was:
-
-| External pull-up | `000000000000000000000` | `000000000010000010000` | `100000000000000000001` |
-|---:|---:|---:|---:|
-| 1.8 kΩ | 0 us | 0 us | 0 us |
-| 3.9 kΩ | 0 us | 0 us | 0 us |
-| 8.2 kΩ | 10 us | 10 us | 20 us |
-| 15 kΩ | 10 us | 20 us | 50 us |
-| 33 kΩ | 50 us | 50 us | 100 us |
-
-These are tested points, not exact electrical threshold measurements.
-
-### Strong Pull-Up Result
-
-With both:
-
-```text
-1.8 kΩ
-```
-
-and:
-
-```text
-3.9 kΩ
-```
-
-all three tested topologies and all three scan orders completed the
-zero-explicit-delay conditions without observed errors.
-
-"Zero delay" means:
-
-> no additional explicit `delayMicroseconds()` was inserted.
-
-It does **not** mean that the physical electrical settling time is zero.
-
-GPIO framework calls, processor execution, and digital reads still consume
-finite time.
-
-### Interpretation
-
-The systematic relationship between pull-up resistance and required settling
-time strongly supports an electrical-settling interpretation.
-
-A plausible model is that cable and circuit capacitance interact with pull-up
-resistance to determine how quickly sensed lines return toward a valid HIGH
-level.
-
-Lower pull-up resistance would therefore be expected to reduce the charging
-time and reduce the required settling interval.
-
-However, Experiment 07 did not directly measure:
-
-- cable capacitance
-- GPIO voltage versus time
-- logic-threshold crossing time
-- transient waveform shape
-- an equivalent RC time constant
-
-Therefore an RC-like interpretation is strongly supported but has not yet been
-quantitatively established.
-
----
-
-# Current Experimental Conclusions
-
-The hardware experiments currently support the following conclusions.
-
-## The Full Scan Remains Viable
-
-There is currently no experimental reason to abandon Sentinel's complete
-21-pair continuity scan.
-
-The long-cable reliability problem can be strongly influenced by the electrical
-interface without changing the processor-independent continuity model.
-
----
-
-## The Historical 1 ms Delay Is Not Fundamentally Required
-
-The historical 1 millisecond delay was a conservative empirical solution.
-
-Experiment 07 demonstrated configurations in which no additional explicit
-drive-settling delay was required for the tested full scans.
-
-This does not yet establish the minimum timing requirement for production
-hardware.
-
----
-
-## Drive-to-Sample Settling Matters
-
-For the observed failure mechanism, sufficient time between driving a line LOW
-and sampling the sense lines eliminates the false-positive measurements.
-
-Release-only settling did not provide the same benefit in Experiment 04.
-
----
-
-## Pull-Up Resistance Matters
-
-External pull-up resistance has emerged as a major electrical design
-parameter.
-
-Stronger pull-ups substantially reduced the tested settling requirement.
-
-The resistor value cannot be selected solely by minimizing settling time
-because stronger pull-ups also increase current when continuity causes a
-driven LOW line to sink current through one or more pull-ups.
-
----
-
-## Scan Order Is a Secondary Electrical Interaction
-
-Scan order can dramatically affect measurements when the electrical interface
-is near its settling limit.
-
-With sufficiently strong pull-ups in Experiment 07, the tested scan-order
-differences disappeared even at zero additional explicit settling delay.
-
-This suggests that scan-order sensitivity is strongly coupled to electrical
-settling rather than necessarily representing a fundamental flaw in the scan
-algorithm.
-
----
-
-## Errors Are Predominantly False Positive
-
-Across the characterized failure conditions, the observed errors have been
-dominated by false-positive continuity measurements.
-
-The recurring pattern is consistent with lines being sampled LOW when the
-trusted topology says they should be HIGH.
-
-The physical waveform responsible has not yet been measured directly.
-
----
-
-# Current Engineering Question
-
-The principal engineering question has changed.
-
-It is no longer:
-
-> Can Sentinel perform the complete 21-pair scan quickly enough?
-
-The evidence now supports retaining the full scan.
-
-The current question is:
-
-> What electrical interface should Sentinel use to provide reliable logic
-> levels, adequate margin, acceptable GPIO current, and sufficient scan speed
-> with realistic fencing cabling?
-
-Important design variables now include:
-
-- external pull-up resistance
-- cable capacitance
-- cable and connector resistance
-- ESP32 input thresholds
-- GPIO sink current
-- simultaneous connected pull-up current
-- protection circuitry
-- noise margin
-- measurement timing
-- eventual processor/platform differences
-
----
-
-# Immediate Next Goal
-
-Evaluate the electrical engineering tradeoff for the Sentinel input interface
-before selecting production values.
-
-In particular, determine an appropriate external pull-up range by considering:
-
-```text
-settling speed
-        |
-        +---- GPIO sink current
-        |
-        +---- multiple connected lines
-        |
-        +---- noise margin
-        |
-        +---- cable resistance/capacitance
-        |
-        +---- power consumption
-        |
-        +---- electrical protection
-```
-
-The 1.8 kΩ and 3.9 kΩ experimental results are highly encouraging, but neither
-value should yet be promoted automatically to a production design.
-
----
-
-# Recommended Next Investigation
-
-Before optimizing scanner software, investigate the electrical interface more
-directly.
-
-Useful next measurements may include:
-
-- actual line voltage versus time after a drive transition
-- approximate cable capacitance
-- current through the driven GPIO for representative continuity topologies
-- effect of multiple simultaneously connected pull-ups
-- logic HIGH and LOW margins
-- behavior with representative floor cords, reels, body cords, and weapons
-- comparison of candidate external pull-up values under longer-duration tests
-
-Oscilloscope measurements may be particularly valuable because they could
-directly connect the observed software error thresholds with the physical
-voltage transient.
-
-The exact next experiment should be selected after reviewing the electrical
-current and protection requirements.
-
----
-
-# Current Architectural Direction
-
-The processor-independent scanner should remain unchanged unless future
-evidence demonstrates an architectural problem.
-
-Hardware-specific code should continue to normalize physical active-low
-measurements into Sentinel's logical continuity representation.
-
-Conceptually, the hardware-facing interface remains equivalent to:
-
-```text
-beginMeasurement(line)
-snapshot()
-endMeasurement()
-```
-
-For the current ESP32 experimental method:
-
-```text
-beginMeasurement(line)
-    -> configure selected line OUTPUT
-    -> drive selected line LOW
-    -> allow required electrical settling
-
-snapshot()
-    -> read sense lines
-    -> interpret LOW as physical continuity
-    -> convert results to canonical logical continuity
-
-endMeasurement()
-    -> release driven line back to input state
-```
-
-Whether the production input state uses internal pull-ups, external pull-ups,
-or additional interface circuitry is a hardware design decision and should not
-leak into the processor-independent scanner.
-
----
-
-# Guidance for Future Development
-
-Do not abandon the full 21-pair scan based on the historical 1 millisecond
-delay.
-
-Do not assume ESP32 GPIO transition specifications determine the complete
-electrical settling requirement.
-
-Do not treat scan order as the fundamental cause merely because order affects
-marginal measurements.
-
-Do not treat GPIO adjacency or capacitive GPIO coupling as an established root
-cause without direct evidence.
-
-Do not interpret zero explicit delay as zero physical settling time.
-
-Do not select the lowest pull-up resistance solely because it produces the
-fastest settling.
-
-Do not optimize low-level GPIO access before accounting for the fact that
-software overhead currently contributes some implicit settling time.
-
-Continue to preserve raw experimental evidence and revise interpretations when
-later experiments provide better explanations.
-
-The engineering principle remains:
-
-> **Measure first. Optimize from evidence.**
-
----
-
-# Experimental Record
-
-The current hardware characterization sequence is:
-
-```text
+``` text
 01  ESP32 settling time
-        |
-        v
 02  Full 21-pair scan
-        |
-        v
 03  Full-scan settling characterization
-        |
-        v
 04  Drive vs. release settling
-        |
-        v
 05  Scan-order characterization
-        |
-        v
 06  GPIO reassignment
-        |
-        v
 07  External pull-up characterization
+08  ESP32-S3 hardware baseline
+09  ESP32-S3 direct GPIO characterization
 ```
 
-The experiment directories are intended to preserve:
+Each experiment directory is intended to preserve:
 
-```text
+``` text
 question
     |
     v
-test method
+method
     |
     v
 raw evidence
     |
     v
-current interpretation
+interpretation
 ```
 
-Later evidence may revise an interpretation without invalidating the historical
-experimental record.
+Later evidence may refine an interpretation without invalidating the
+earlier experimental record.
 
----
+------------------------------------------------------------------------
 
-# Last Known Clean Repository State
+## What Is Established
 
-Experiments 01 through 07 and their current documentation have been committed
-and pushed through:
+The current evidence strongly supports the following conclusions:
 
-```text
-2a240c8  Document ESP32 external pull-up experiment
+1.  The complete canonical 21-pair continuity model is practical.
+2.  The historical 1 ms delay is not an inherent requirement.
+3.  Drive-to-sample settling is important for the observed failure
+    mechanism.
+4.  Explicit release settling did not provide the same corrective effect
+    in the tested conditions.
+5.  Scan-order sensitivity can reveal marginal electrical settling.
+6.  Pull-up resistance strongly controls settling behavior.
+7.  3.9 kOhm external pull-ups provide a useful tested operating region.
+8.  The LILYGO T-Display S3 is a viable Sentinel development platform.
+9.  Direct ESP32-S3 register access successfully implements the scanner.
+10. Arduino GPIO overhead had been providing substantial implicit
+    settling time.
+11. One simultaneous GPIO register snapshot can capture all seven
+    continuity lines.
+12. The tested 20 us direct-register condition was error-free across the
+    complete Experiment 09 matrix.
+13. The complete scanner is fast enough that reducing the logical
+    measurement model is unnecessary.
+
+------------------------------------------------------------------------
+
+## What Is Not Yet Established
+
+Do not currently claim that:
+
+-   20 us is the exact minimum reliable settling interval.
+-   20 us is the permanent production specification.
+-   3.9 kOhm is the only acceptable production pull-up value.
+-   the RC-like physical explanation has been directly measured.
+-   every possible fencing wiring configuration has been tested.
+-   the T-Display S3 GPIO assignment is a permanent Sentinel
+    architecture.
+-   the current implementation has been validated across production
+    temperature, supply-voltage, hardware-unit, or manufacturing
+    variation.
+
+These remain implementation and validation questions rather than reasons
+to change the logical scanner architecture.
+
+------------------------------------------------------------------------
+
+## Current Candidate Hardware Baseline
+
+``` text
+Platform:
+    LILYGO T-Display S3 / ESP32-S3
+
+Scanner GPIO:
+    RA = GPIO1
+    RB = GPIO2
+    RC = GPIO10
+    MT = GPIO16
+    GC = GPIO11
+    GB = GPIO12
+    GA = GPIO13
+
+Proposed BZ:
+    GPIO21
+
+External pull-ups:
+    3.9 kOhm
+
+Measurement implementation:
+    direct ESP32-S3 GPIO registers
+
+Input acquisition:
+    one GPIO0-31 register snapshot per driven phase
+
+Explicit drive settling:
+    20 us conservative candidate
+
+Explicit release settling:
+    0 us
 ```
 
-At that point:
+These values define the current experimental baseline, not permanent
+architectural requirements.
 
-```text
-branch: main
-local: synchronized with origin/main
-working tree: clean
+------------------------------------------------------------------------
+
+## Current Development Direction
+
+The scanner-characterization phase is mature enough that further
+minimum-delay optimization is not the highest-value next task.
+
+The preferred progression is:
+
+``` text
+validated Experiment 09 scanner
+        |
+        v
+promote ESP32-S3 measurement implementation
+into Sentinel hardware layer
+        |
+        v
+preserve processor-independent ContinuityMap boundary
+        |
+        v
+review / complete game-engine specification
+        |
+        v
+implement and desktop-test game engine
+        |
+        v
+integrate scanner -> game engine
+        |
+        v
+LCD and BZ scoring presentation
 ```
 
----
+Further hardware experiments should be driven by a concrete unanswered
+product question rather than by a desire to continue reducing scan time.
 
-# Next Documentation Task
+------------------------------------------------------------------------
 
-Update:
+## Immediate Next Tasks
 
-```text
+1.  Review the existing hardware abstraction between the
+    processor-independent scanner and physical GPIO implementation.
+2.  Determine how the proven Experiment 09 ESP32-S3 implementation
+    should be promoted into the production firmware structure.
+3.  Keep ESP32 register definitions and GPIO numbering in
+    hardware-specific code.
+4.  Preserve the canonical `ContinuityMap` as the boundary between
+    measurement and interpretation.
+5.  Review the existing game-engine architecture and specifications.
+6.  Identify any missing rule/timing specification work before
+    implementation.
+7.  Begin integration along this boundary:
+
+``` text
+physical fencing wiring
+        ->
+ESP32-S3 hardware measurement
+        ->
+ContinuityMap
+        ->
+game engine
+```
+
+8.  Treat LCD and BZ as presentation/output concerns above the
+    electrical scanner.
+
+------------------------------------------------------------------------
+
+## Documentation Roles
+
+To avoid duplicating project knowledge:
+
+``` text
+STATUS.md
+    current authoritative project state
+
+docs/specifications/
+    normative system behavior and interfaces
+
 docs/rationale/DESIGN_RATIONALE.md
+    durable explanation of why design decisions were made
+
+experiments/
+    detailed experimental methods, raw evidence, and interpretations
 ```
 
-to preserve the architectural lessons from hardware characterization,
-particularly:
+`STATUS.md` should remain current rather than becoming a complete
+historical diary. Git history preserves older status snapshots.
 
-- retain the complete measurement model while improving the electrical
-  interface,
-- distinguish logical measurement architecture from physical electrical
-  implementation,
-- treat settling behavior as a system-level electrical property rather than a
-  GPIO transition-time property,
-- preserve experimental evidence before optimizing implementation.
+------------------------------------------------------------------------
 
----
+## Engineering Principles
 
-# Last Updated
+The scanner investigation has repeatedly reinforced:
 
-2026-08-31
+> **Measure first. Optimize from evidence.**
+
+Experiment 09 adds an important refinement:
+
+> **Make timing explicit before treating it as a design parameter.**
+
+The next phase should use the experimentally validated scanner rather
+than continue optimizing a performance problem that no longer constrains
+the architecture.
+
+------------------------------------------------------------------------
+
+## Last Updated
+
+2026-10-05
