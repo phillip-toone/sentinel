@@ -185,9 +185,14 @@ Sentinel therefore stores each unique connection exactly once.
 
 # Electrical Snapshot
 
-An electrical snapshot represents the complete electrical state of the fencing apparatus at one instant in time.
+An electrical snapshot represents one complete observation of the electrical
+state of the fencing apparatus.
 
 A snapshot consists of twenty-one Boolean continuity measurements.
+
+The measurements that form a snapshot may be acquired over a finite scan
+interval. The Electrical Model does not define the physical measurement
+sequence or require all twenty-one relationships to be sampled simultaneously.
 
 Every snapshot is independent.
 

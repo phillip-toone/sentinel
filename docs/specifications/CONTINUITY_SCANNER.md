@@ -61,7 +61,14 @@ The scanner does not know how these lines are mapped to processor GPIOs.
 
 Each scan produces one complete electrical snapshot.
 
-The electrical representation of that snapshot is defined by the Electrical Model specification.
+The electrical representation of that snapshot is defined by the Electrical
+Model specification.
+
+Temporal association of completed snapshots is defined separately by the
+Continuity Observation specification.
+
+The Continuity Scanner itself does not assign temporal meaning to a snapshot
+or maintain observation history.
 
 ---
 
