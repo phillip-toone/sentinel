@@ -73,10 +73,10 @@ It does not determine:
 
 -   foil, épée, or sabre rules
 -   touches
--   lockout timing
+-   blocking timing
 -   scoring
 -   display state
--   buzzer behavior
+-   audible-signal behavior
 
 Those belong to higher layers.
 

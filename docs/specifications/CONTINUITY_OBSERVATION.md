@@ -381,11 +381,11 @@ The Continuity Observation layer shall not perform:
 -   minimum-contact qualification,
 -   weapon interpretation,
 -   touch detection,
--   lockout timing,
+-   blocking timing,
 -   scoring,
 -   game-state transitions,
 -   display behavior,
--   buzzer behavior.
+-   audible-signal behavior.
 
 If a scanner produces:
 
@@ -681,7 +681,7 @@ This specification intentionally does not define:
 
 -   minimum contact times,
 -   touch qualification intervals,
--   lockout periods,
+-   blocking periods,
 -   simultaneous-touch windows,
 -   weapon-specific timing rules.
 

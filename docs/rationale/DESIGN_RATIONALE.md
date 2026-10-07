@@ -1041,7 +1041,7 @@ Those differences should be accommodated by the hardware-specific layer.
 
 # Long-Term Goal
 
-The ultimate objective is not simply to build a fencing scoring machine.
+The ultimate objective is not simply to build a fencing scoring apparatus.
 
 The goal is to build an engineering platform that is:
 

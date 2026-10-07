@@ -15,7 +15,7 @@ Modern fencing scoring systems range from expensive commercial equipment to hobb
 
 Sentinel exists to explore a different approach.
 
-Rather than building another scoring machine, Sentinel aims to build a reusable, deterministic scoring engine that can serve as the foundation for many different scoring systems.
+Rather than building another scoring apparatus, Sentinel aims to build a reusable, deterministic scoring engine that can serve as the foundation for many different scoring systems.
 
 The engine should understand fencing—not displays, operating systems, or communication protocols.
 
