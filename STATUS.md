@@ -149,7 +149,7 @@ Sentinel models seven logical fencing lines:
 RA
 RB
 RC
-MT
+CP
 GC
 GB
 GA
@@ -203,7 +203,7 @@ The current continuity GPIO assignment is:
   RA                   1
   RB                   2
   RC                  10
-  MT                  16
+  CP                  16
   GC                  11
   GB                  12
   GA                  13
@@ -656,7 +656,7 @@ Scanner GPIO:
     RA = GPIO1
     RB = GPIO2
     RC = GPIO10
-    MT = GPIO16
+    CP = GPIO16
     GC = GPIO11
     GB = GPIO12
     GA = GPIO13

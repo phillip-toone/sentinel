@@ -19,7 +19,7 @@ namespace Sentinel
         RA = 0,
         RB,
         RC,
-        MT,
+        CP,
         GC,
         GB,
         GA,

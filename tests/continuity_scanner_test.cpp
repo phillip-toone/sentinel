@@ -20,25 +20,25 @@ struct PairTest
 constexpr std::array<PairTest, 21> pairTests{{
     {Line::RA, Line::RB, 0},
     {Line::RA, Line::RC, 1},
-    {Line::RA, Line::MT, 2},
+    {Line::RA, Line::CP, 2},
     {Line::RA, Line::GC, 3},
     {Line::RA, Line::GB, 4},
     {Line::RA, Line::GA, 5},
 
     {Line::RB, Line::RC, 6},
-    {Line::RB, Line::MT, 7},
+    {Line::RB, Line::CP, 7},
     {Line::RB, Line::GC, 8},
     {Line::RB, Line::GB, 9},
     {Line::RB, Line::GA, 10},
 
-    {Line::RC, Line::MT, 11},
+    {Line::RC, Line::CP, 11},
     {Line::RC, Line::GC, 12},
     {Line::RC, Line::GB, 13},
     {Line::RC, Line::GA, 14},
 
-    {Line::MT, Line::GC, 15},
-    {Line::MT, Line::GB, 16},
-    {Line::MT, Line::GA, 17},
+    {Line::CP, Line::GC, 15},
+    {Line::CP, Line::GB, 16},
+    {Line::CP, Line::GA, 17},
 
     {Line::GC, Line::GB, 18},
     {Line::GC, Line::GA, 19},
@@ -73,23 +73,23 @@ void testTransitiveTriangle()
 
     // Physical network:
     //
-    //     RA ----- GC ----- MT
+    //     RA ----- GC ----- CP
     //
     io.connect(Line::RA, Line::GC);
-    io.connect(Line::GC, Line::MT);
+    io.connect(Line::GC, Line::CP);
 
     ContinuityScanner<MockNodeIO> scanner(io);
     const auto map = scanner.scan();
 
     assert(map.hasContinuity(Line::RA, Line::GC));
-    assert(map.hasContinuity(Line::RA, Line::MT));
-    assert(map.hasContinuity(Line::GC, Line::MT));
+    assert(map.hasContinuity(Line::RA, Line::CP));
+    assert(map.hasContinuity(Line::GC, Line::CP));
 
     // Canonical bits:
     //
-    // RA-MT = bit 2
+    // RA-CP = bit 2
     // RA-GC = bit 3
-    // MT-GC = bit 15
+    // CP-GC = bit 15
     //
     constexpr uint32_t expected =
         (uint32_t{1} << 2) |
@@ -105,14 +105,14 @@ void testIndependentComponents()
 
     // Three electrically independent components:
     //
-    //     RA ----- GC ----- MT
+    //     RA ----- GC ----- CP
     //
     //     RB ----- RC
     //
     //     GB ----- GA
     //
     io.connect(Line::RA, Line::GC);
-    io.connect(Line::GC, Line::MT);
+    io.connect(Line::GC, Line::CP);
 
     io.connect(Line::RB, Line::RC);
 
@@ -123,8 +123,8 @@ void testIndependentComponents()
 
     // Component 1
     assert(map.hasContinuity(Line::RA, Line::GC));
-    assert(map.hasContinuity(Line::RA, Line::MT));
-    assert(map.hasContinuity(Line::GC, Line::MT));
+    assert(map.hasContinuity(Line::RA, Line::CP));
+    assert(map.hasContinuity(Line::GC, Line::CP));
 
     // Component 2
     assert(map.hasContinuity(Line::RB, Line::RC));
@@ -136,14 +136,14 @@ void testIndependentComponents()
     // remain electrically isolated.
     assert(!map.hasContinuity(Line::RA, Line::RB));
     assert(!map.hasContinuity(Line::GC, Line::RC));
-    assert(!map.hasContinuity(Line::MT, Line::GA));
+    assert(!map.hasContinuity(Line::CP, Line::GA));
     assert(!map.hasContinuity(Line::RB, Line::GB));
 
     constexpr uint32_t expected =
-        (uint32_t{1} << 2) |  // RA-MT
+        (uint32_t{1} << 2) |  // RA-CP
         (uint32_t{1} << 3) |  // RA-GC
         (uint32_t{1} << 6) |  // RB-RC
-        (uint32_t{1} << 15) | // MT-GC
+        (uint32_t{1} << 15) | // CP-GC
         (uint32_t{1} << 20);  // GB-GA
 
     assert(map.raw() == expected);

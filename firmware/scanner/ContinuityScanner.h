@@ -21,7 +21,7 @@ namespace Sentinel
      *     bit 0 = RA
      *     bit 1 = RB
      *     bit 2 = RC
-     *     bit 3 = MT
+     *     bit 3 = CP
      *     bit 4 = GC
      *     bit 5 = GB
      *     bit 6 = GA
@@ -44,7 +44,7 @@ namespace Sentinel
             scanFrom(map, Line::RA, 1);
             scanFrom(map, Line::RB, 2);
             scanFrom(map, Line::RC, 3);
-            scanFrom(map, Line::MT, 4);
+            scanFrom(map, Line::CP, 4);
             scanFrom(map, Line::GC, 5);
             scanFrom(map, Line::GB, 6);
 

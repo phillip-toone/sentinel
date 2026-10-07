@@ -73,7 +73,7 @@ Sentinel models the fencing apparatus using seven logical lines.
 |     0 | RA   | Red A Line     |
 |     1 | RB   | Red B Line     |
 |     2 | RC   | Red C Line     |
-|     3 | MT   | Metallic Strip |
+|     3 | CP   | Conductive Piste |
 |     4 | GC   | Green C Line   |
 |     5 | GB   | Green B Line   |
 |     6 | GA   | Green A Line   |
@@ -141,22 +141,22 @@ This ordering is considered part of Sentinel's public interface.
 | ---: | ---------- |
 |    0 | RA-RB      |
 |    1 | RA-RC      |
-|    2 | RA-MT      |
+|    2 | RA-CP      |
 |    3 | RA-GC      |
 |    4 | RA-GB      |
 |    5 | RA-GA      |
 |    6 | RB-RC      |
-|    7 | RB-MT      |
+|    7 | RB-CP      |
 |    8 | RB-GC      |
 |    9 | RB-GB      |
 |   10 | RB-GA      |
-|   11 | RC-MT      |
+|   11 | RC-CP      |
 |   12 | RC-GC      |
 |   13 | RC-GB      |
 |   14 | RC-GA      |
-|   15 | MT-GC      |
-|   16 | MT-GB      |
-|   17 | MT-GA      |
+|   15 | CP-GC      |
+|   16 | CP-GB      |
+|   17 | CP-GA      |
 |   18 | GC-GB      |
 |   19 | GC-GA      |
 |   20 | GB-GA      |
@@ -174,7 +174,7 @@ The following identities always hold.
 ```
 RA-GC == GC-RA
 
-RB-MT == MT-RB
+RB-CP == CP-RB
 
 GA-RC == RC-GA
 ```

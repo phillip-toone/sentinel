@@ -66,14 +66,14 @@ namespace Sentinel
          * @brief Returns the electrical state of all seven lines.
          *
          * Continuity is transitive. If RA is connected to GC and GC is
-         * connected to MT, driving RA causes RA, GC, and MT all to read HIGH.
+         * connected to CP, driving RA causes RA, GC, and CP all to read HIGH.
          *
          * Returned bit positions are:
          *
          *     bit 0 = RA
          *     bit 1 = RB
          *     bit 2 = RC
-         *     bit 3 = MT
+         *     bit 3 = CP
          *     bit 4 = GC
          *     bit 5 = GB
          *     bit 6 = GA

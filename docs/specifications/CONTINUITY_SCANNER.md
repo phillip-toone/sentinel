@@ -47,7 +47,7 @@ The scanner operates on the seven logical lines defined by the Electrical Model.
 RA
 RB
 RC
-MT
+CP
 GC
 GB
 GA
@@ -82,7 +82,7 @@ Drive RA
 Measure:
 RB
 RC
-MT
+CP
 GC
 GB
 GA
@@ -93,7 +93,7 @@ Drive RB
 
 Measure:
 RC
-MT
+CP
 GC
 GB
 GA
@@ -103,14 +103,14 @@ GA
 Drive RC
 
 Measure:
-MT
+CP
 GC
 GB
 GA
 ```
 
 ```
-Drive MT
+Drive CP
 
 Measure:
 GC
@@ -161,9 +161,9 @@ For example,
 ```
 RA-GC = 1
 
-GC-MT = 1
+GC-CP = 1
 
-RA-MT = 0
+RA-CP = 0
 ```
 
 shall be reported exactly as measured.
